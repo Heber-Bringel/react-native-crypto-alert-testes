@@ -1,6 +1,6 @@
 # Crypto Alert - Suíte de Testes Automatizados 🚀
 
-> Atividade Prática de **Programação Web 2**  
+> Atividade Prática de **Engenharia de Software 3**  
 > **Instituto Federal do Piauí (IFPI) - Campus Piripiri**  
 > Aplicação base: [React Native Crypto Alert (Rocketseat)](https://github.com/rocketseat-education/react-native-crypto-alert)
 
