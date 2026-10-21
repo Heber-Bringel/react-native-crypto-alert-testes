@@ -7,6 +7,7 @@ import {
   cleanup,
 } from "@testing-library/react-native";
 import { CreateAlertScreen } from "../CreateAlertScreen";
+import { PriceAlertsScreen } from "@screens/PriceAlertsScreen/PriceAlertsScreen";
 import { AlertProvider } from "@context/AlertProvider/AlertProvider";
 import { router } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -40,7 +41,7 @@ describe("Teste de Integração - Fluxo Completo de Criação de Alerta", () => 
   });
 
   it("deve executar o fluxo completo: selecionar moeda, preencher preço, alterar condição e salvar alerta", async () => {
-    await render(
+    const createScreen = await render(
       <AlertProvider>
         <CreateAlertScreen />
       </AlertProvider>
@@ -97,6 +98,22 @@ describe("Teste de Integração - Fluxo Completo de Criação de Alerta", () => 
         "cryptoAlerts",
         expect.stringContaining("Bitcoin")
       );
+    });
+
+    // 8. Renderiza a tela de listagem para validar o resultado visível do fluxo
+    await createScreen.unmount();
+
+    await render(
+      <AlertProvider>
+        <PriceAlertsScreen />
+      </AlertProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Price Alerts")).toBeTruthy();
+      expect(screen.getByText("Bitcoin")).toBeTruthy();
+      expect(screen.getByText("below")).toBeTruthy();
+      expect(screen.getByText("$75,000.00")).toBeTruthy();
     });
   });
 
