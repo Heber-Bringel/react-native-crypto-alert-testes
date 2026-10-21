@@ -180,23 +180,70 @@ Conforme as regras da atividade, os mocks foram aplicados estritamente nas front
 
 ## 📈 Resumo do Relatório de Cobertura (Item 6)
 
-Resultado obtido via comando `npm run test:coverage -- --runInBand`:
+Resultado completo obtido via comando `npm run test:coverage -- --runInBand` (inclui todos os arquivos, inclusive os que ainda não possuem testes):
 
 ```text
 Test Suites: 8 passed, 8 total
 Tests:       41 passed, 41 total
 Snapshots:   0 total
 
-All files                             |   75.52 |    66.25 |   80.00 |   77.20
- components/AlertCard                 |  100.00 |   100.00 |  100.00 |  100.00
- components/ConditionOptionRow        |  100.00 |   100.00 |  100.00 |  100.00
- components/CryptoCard                |   93.75 |    90.47 |  100.00 |  100.00
- components/PrimaryButton             |  100.00 |    76.92 |  100.00 |  100.00
- context/AlertProvider                |   97.22 |    80.00 |   93.33 |   96.77
- screens/CreateAlertScreen            |   96.96 |    85.00 |  100.00 |  100.00
- screens/CryptoListScreen             |  100.00 |   100.00 |  100.00 |  100.00
- screens/PriceAlertsScreen            |  100.00 |   100.00 |  100.00 |  100.00
- utils/index.ts                       |  100.00 |   100.00 |  100.00 |  100.00
+-------------------------------|---------|----------|---------|---------|-------------------
+File                           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------------------|---------|----------|---------|---------|-------------------
+All files                      |   75.52 |    66.25 |      80 |    77.2 |                   
+ components/AlertCard          |     100 |      100 |     100 |     100 |                   
+  AlertCard.tsx                |     100 |      100 |     100 |     100 |                   
+  useAlertCard.ts              |     100 |      100 |     100 |     100 |                   
+ components/ConditionOptionRow |     100 |      100 |     100 |     100 |                   
+  ConditionOptionRow.tsx       |     100 |      100 |     100 |     100 |                   
+  useConditionOptionRow.ts     |     100 |      100 |     100 |     100 |                   
+ components/CryptoCard         |   93.75 |    90.47 |     100 |     100 |                   
+  CryptoCard.tsx               |     100 |      100 |     100 |     100 |                   
+  useCryptoCard.ts             |    92.3 |       50 |     100 |     100 | 12-21             
+ components/EmptyState         |     100 |       75 |     100 |     100 |                   
+  EmptyState.tsx               |     100 |       75 |     100 |     100 | 26                
+  useEmptyState.ts             |     100 |      100 |     100 |     100 |                   
+ components/ErrorState         |     100 |       25 |     100 |     100 |                   
+  ErrorState.tsx               |     100 |       25 |     100 |     100 | 14-27             
+  useErrorState.ts             |     100 |      100 |     100 |     100 |                   
+ components/LoadingState       |     100 |       50 |     100 |     100 |                   
+  LoadingState.tsx             |     100 |      100 |     100 |     100 |                   
+  useLoadingState.ts           |     100 |       50 |     100 |     100 | 6                 
+ components/PrimaryButton      |     100 |    76.92 |     100 |     100 |                   
+  PrimaryButton.tsx            |     100 |    81.81 |     100 |     100 | 33                
+  usePrimaryButton.ts          |     100 |       50 |     100 |     100 | 10                
+ components/ScreenContainer    |       0 |      100 |       0 |       0 |                   
+  ScreenContainer.tsx          |       0 |      100 |       0 |       0 | 11                
+ components/ScreenHeader       |     100 |       50 |     100 |     100 |                   
+  ScreenHeader.tsx             |     100 |       50 |     100 |     100 | 17                
+  useScreenHeader.ts           |     100 |      100 |     100 |     100 |                   
+ components/SelectField        |   94.44 |    69.23 |      90 |     100 |                   
+  SelectField.tsx              |     100 |    66.66 |     100 |     100 | 24,78-84          
+  useSelectField.ts            |    92.3 |       75 |   83.33 |     100 | 27                
+ constants                     |       0 |        0 |     100 |       0 |                   
+  theme.ts                     |       0 |        0 |     100 |       0 | 9-60              
+ context/AlertProvider         |   97.22 |       80 |   93.33 |   96.77 |                   
+  AlertProvider.tsx            |     100 |      100 |     100 |     100 |                   
+  useAlertProvider.ts          |   97.05 |       80 |   92.85 |   96.55 | 84                
+ data                          |      20 |        0 |       0 |   21.42 |                   
+  cryptoData.ts                |      20 |        0 |       0 |   21.42 | 88-132            
+ screens/ConversionScreen      |       0 |        0 |       0 |       0 |                   
+  ConversionScreen.tsx         |       0 |        0 |       0 |       0 | 21-23             
+  useConversionScreen.ts       |       0 |        0 |       0 |       0 | 11-76             
+ screens/CreateAlertScreen     |   96.96 |       85 |     100 |     100 |                   
+  CreateAlertScreen.tsx        |     100 |       50 |     100 |     100 | 42-62             
+  useCreateAlertScreen.ts      |   96.77 |    93.75 |     100 |     100 | 37                
+ screens/CryptoListScreen      |     100 |      100 |     100 |     100 |                   
+  CryptoListScreen.tsx         |     100 |      100 |     100 |     100 |                   
+  useCryptoListScreen.ts       |     100 |      100 |     100 |     100 |                   
+ screens/PriceAlertsScreen     |     100 |      100 |     100 |     100 |                   
+  PriceAlertsScreen.tsx        |     100 |      100 |     100 |     100 |                   
+  usePriceAlertsScreen.ts      |     100 |      100 |     100 |     100 |                   
+ theme                         |     100 |      100 |     100 |     100 |                   
+  colors.ts                    |     100 |      100 |     100 |     100 |                   
+ utils                         |     100 |      100 |     100 |     100 |                   
+  index.ts                     |     100 |      100 |     100 |     100 |                   
+-------------------------------|---------|----------|---------|---------|-------------------
 ```
 
 O arquivo completo com o resumo da execução está em [`docs/coverage-summary.txt`](docs/coverage-summary.txt). O relatório HTML detalhado é gerado em `coverage/lcov-report/index.html` após rodar o comando.
