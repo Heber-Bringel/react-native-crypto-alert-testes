@@ -38,6 +38,8 @@ describe("Componente Visual - PrimaryButton", () => {
     );
 
     const button = screen.getByRole("button", { name: "Desabilitado" });
+    expect(button.props.accessibilityState.disabled).toBe(true);
+
     fireEvent.press(button);
 
     expect(handlePressMock).not.toHaveBeenCalled();

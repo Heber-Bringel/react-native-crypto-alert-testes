@@ -1,7 +1,8 @@
 import React from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react-native";
 import { CryptoCard } from "../CryptoCard";
-import { AlertContext } from "@context/AlertProvider/useAlertProvider";
+import { AlertProvider } from "@context/AlertProvider/AlertProvider";
 import type { Cryptocurrency } from "@data/cryptoData";
 import type { PriceAlert } from "@context/AlertProvider/useAlertProvider";
 
@@ -22,21 +23,22 @@ const mockCryptoEthereum: Cryptocurrency = {
   change24h: -1.23,
 };
 
-function renderWithAlerts(crypto: Cryptocurrency, alerts: PriceAlert[] = []) {
+async function renderWithAlerts(crypto: Cryptocurrency, alerts: PriceAlert[] = []) {
+  await AsyncStorage.setItem("cryptoAlerts", JSON.stringify(alerts));
+
   return render(
-    <AlertContext.Provider
-      value={{
-        alerts,
-        addAlert: jest.fn(),
-        deleteAlert: jest.fn(),
-      }}
-    >
+    <AlertProvider>
       <CryptoCard crypto={crypto} />
-    </AlertContext.Provider>
+    </AlertProvider>,
   );
 }
 
 describe("Componente Visual - CryptoCard", () => {
+  beforeEach(async () => {
+    jest.clearAllMocks();
+    await AsyncStorage.clear();
+  });
+
   it("deve renderizar as informações principais da criptomoeda (nome, símbolo, preço e variação positiva)", async () => {
     await renderWithAlerts(mockCryptoBitcoin);
 
@@ -83,7 +85,10 @@ describe("Componente Visual - CryptoCard", () => {
 
     await renderWithAlerts(mockCryptoBitcoin, [alert]);
 
-    expect(screen.getByText("1 alert")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText("1 alert")).toBeTruthy();
+    });
+
     expect(
       screen.getByRole("button", {
         name: "Toggle alerts for this cryptocurrency",
@@ -113,7 +118,9 @@ describe("Componente Visual - CryptoCard", () => {
 
     await renderWithAlerts(mockCryptoBitcoin, alerts);
 
-    expect(screen.getByText("2 alerts")).toBeTruthy();
+    await waitFor(() => {
+      expect(screen.getByText("2 alerts")).toBeTruthy();
+    });
 
     // Inicialmente a lista de detalhes está colapsada
     expect(screen.queryByText("Above target")).toBeNull();
