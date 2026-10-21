@@ -101,7 +101,7 @@ O relatório em formato HTML detalhado é gerado no diretório `coverage/lcov-re
 
 ## 🔍 Explicação dos Testes Criados
 
-A suíte conta com **29 testes automatizados** distribuídos em **5 arquivos** organizados de forma modular e progressiva:
+A suíte conta com **41 testes automatizados** distribuídos em **8 arquivos** organizados de forma modular e progressiva:
 
 ### 1. Funções Puras e Formatadores (Item 1)
 - **Arquivo**: `src/utils/__tests__/index.test.ts`
@@ -114,11 +114,17 @@ A suíte conta com **29 testes automatizados** distribuídos em **5 arquivos** o
     - Valor zero (`0` -> `"0.00"`).
     - Valores negativos (`-1250.75` -> `"-1,250.75"`).
     - Casos limite de arredondamento matemático.
+    - Entradas inválidas (`NaN`, `Infinity`, `-Infinity`, `null` e `undefined`) retornando `"0.00"` sem quebrar a renderização.
   - `formatChange`:
     - Variação positiva com adição obrigatória do sinal `+` e sufixo `%` (`+2.45%`).
     - Variação negativa com preservação do sinal `-` (`-1.23%`).
     - Variação nula com formato padronizado (`+0.00%`).
     - Arredondamento com duas casas decimais.
+    - Entradas inválidas (`NaN`, `Infinity`, `-Infinity`, `null` e `undefined`) retornando `"+0.00%"`.
+- **Regras de validação do formulário**: `src/screens/CreateAlertScreen/__tests__/useCreateAlertScreen.test.tsx`
+  - Formulário vazio deve apresentar os erros `"Please select a cryptocurrency"` e `"Please enter a target price"`.
+  - Preço não numérico, zero ou negativo deve apresentar `"Please enter a valid price"`.
+  - Formulário válido deve salvar o alerta e redirecionar para `/alerts`.
 
 ### 2. Componentes Visuais (Item 2)
 - **Componente 1: `PrimaryButton`** (`src/components/PrimaryButton/__tests__/PrimaryButton.test.tsx`)
@@ -133,12 +139,16 @@ A suíte conta com **29 testes automatizados** distribuídos em **5 arquivos** o
   - Valida que o botão de badge de alertas NÃO é renderizado quando não existem alertas cadastrados.
   - Valida pluralização da badge ("1 alert" vs "2 alerts") via `getByRole("button")`.
   - Testa interação de expansão e recolhimento da lista detalhada de alertas cadastrados (preço alvo e condição "Above/Below") usando `waitFor`.
+  - Utiliza o `AlertProvider` real, semeando apenas o `AsyncStorage` mockado como fronteira externa.
+- **Telas com estados visuais**:
+  - `CryptoListScreen` (`src/screens/CryptoListScreen/__tests__/CryptoListScreen.test.tsx`): loading, sucesso com preços formatados, vazio e erro com retry.
+  - `PriceAlertsScreen` (`src/screens/PriceAlertsScreen/__tests__/PriceAlertsScreen.test.tsx`): estado vazio, navegação para criação, listagem de alerta salvo e remoção.
 
 ### 3. Hook Customizado com Efeitos Assíncronos (Item 3)
 - **Arquivo**: `src/screens/CryptoListScreen/__tests__/useCryptoListScreen.test.ts`
 - **Alvo**: Hook `useCryptoListScreen` em `src/screens/CryptoListScreen/useCryptoListScreen.ts`.
 - **Cenários Cobertos**:
-  - Estado inicial de carregamento (`loadingState: "loading"`).
+  - Estado inicial assertado antes da resolução da promise: `loadingState: "loading"` e lista de fallback estática.
   - Resolução assíncrona com sucesso da API CoinGecko: transição para `loadingState: "idle"` e preenchimento reativo do array de criptomoedas.
   - Resposta de array vazio da API: transição correta para `loadingState: "empty"`.
   - Tratamento de falhas de rede / erro da API: transição para `loadingState: "error"` e ativação segura da lista estática de fallback.
@@ -146,7 +156,7 @@ A suíte conta com **29 testes automatizados** distribuídos em **5 arquivos** o
 
 ### 4. Fluxo Completo de Integração (Item 4)
 - **Arquivo**: `src/screens/CreateAlertScreen/__tests__/CreateAlertScreen.integration.test.tsx`
-- **Alvo**: Tela real `CreateAlertScreen` integrada com o `AlertProvider`, `SelectField`, `ConditionOptionRow`, `PrimaryButton` e `ScreenHeader`.
+- **Alvo**: Tela real `CreateAlertScreen` integrada com o `AlertProvider`, `SelectField`, `ConditionOptionRow`, `PrimaryButton`, `ScreenHeader` e, ao final, `PriceAlertsScreen` com `AlertCard`.
 - **Jornada do Usuário Testada**:
   1. Renderização inicial com campos vazios e validação de que o botão "Save Alert" inicia desabilitado.
   2. O usuário clica no seletor semântico "Select cryptocurrency", abrindo o modal com a lista de moedas.
@@ -155,54 +165,48 @@ A suíte conta com **29 testes automatizados** distribuídos em **5 arquivos** o
   5. O usuário seleciona a condição de disparo "Below target price".
   6. O formulário valida as entradas reativamente e habilita o botão "Save Alert".
   7. O usuário clica em "Save Alert": o alerta é registrado no contexto, gravado no armazenamento local (`AsyncStorage`) e o app redireciona para `/alerts`.
-  8. O usuário clica no botão semântico de voltar ("Go back") no cabeçalho e o app invoca `router.back()`.
+  8. A tela `PriceAlertsScreen` é renderizada com o mesmo `AlertProvider`: o alerta salvo aparece visivelmente com "Bitcoin", condição "below" e preço alvo "$75,000.00".
+  9. O usuário clica no botão semântico de voltar ("Go back") no cabeçalho e o app invoca `router.back()`.
 
 ### 5. Estratégia de Mocks de Limites Externos (Item 5)
 Conforme as regras da atividade, os mocks foram aplicados estritamente nas fronteiras externas do sistema:
 - **Rede / API (`fetchCryptocurrenciesFromApi`)**: mock de chamadas HTTP para isolar testes de oscilações da CoinGecko.
 - **Armazenamento (`AsyncStorage`)**: mock em memória através de `@react-native-async-storage/async-storage/jest/async-storage-mock`.
 - **Navegação (`expo-router`)**: mock das funções `router.push`, `router.replace` e `router.back`.
-- Todos os componentes, hooks de negócio e regras de contexto permanecem 100% reais nos testes.
+- **Biblioteca nativa (`expo-image`)**: substituída por uma `View` no ambiente de teste.
+- Todos os componentes, hooks de negócio e regras de contexto permanecem reais. O `AlertProvider` real é usado nos testes de `CryptoCard`, `CryptoListScreen`, `PriceAlertsScreen` e no fluxo de integração; o `AsyncStorage` é apenas semeado como fronteira externa.
 
 ---
 
 ## 📈 Resumo do Relatório de Cobertura (Item 6)
 
-Resultado obtido via comando `npm run test:coverage`:
+Resultado obtido via comando `npm run test:coverage -- --runInBand`:
 
 ```text
-PASS src/utils/__tests__/index.test.ts
-PASS src/screens/CryptoListScreen/__tests__/useCryptoListScreen.test.ts
-PASS src/components/PrimaryButton/__tests__/PrimaryButton.test.tsx
-PASS src/components/CryptoCard/__tests__/CryptoCard.test.tsx
-PASS src/screens/CreateAlertScreen/__tests__/CreateAlertScreen.integration.test.tsx
--------------------------------|---------|----------|---------|---------|-------------------
-File                           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
--------------------------------|---------|----------|---------|---------|-------------------
-All files                      |   59.57 |    49.05 |   56.66 |    61.5 |                   
- components/ConditionOptionRow |     100 |      100 |     100 |     100 |                   
- components/CryptoCard         |   93.75 |    90.47 |     100 |     100 |                   
- components/PrimaryButton      |     100 |    69.23 |     100 |     100 |                   
- components/ScreenHeader       |     100 |       50 |     100 |     100 |                   
- components/SelectField        |   94.44 |    69.23 |      90 |     100 |                   
- context/AlertProvider         |   88.88 |       80 |   73.33 |   93.54 |                   
- screens/CreateAlertScreen     |   84.84 |       65 |     100 |   89.65 |                   
- screens/CryptoListScreen      |    82.6 |    33.33 |   57.14 |    82.6 |                   
-  useCryptoListScreen.ts       |     100 |      100 |     100 |     100 |                   
- theme/colors.ts               |     100 |      100 |     100 |     100 |                   
- utils/index.ts                |     100 |      100 |     100 |     100 |                   
--------------------------------|---------|----------|---------|---------|-------------------
-
-Test Suites: 5 passed, 5 total
-Tests:       29 passed, 29 total
+Test Suites: 8 passed, 8 total
+Tests:       41 passed, 41 total
 Snapshots:   0 total
+
+All files                             |   75.52 |    66.25 |   80.00 |   77.20
+ components/AlertCard                 |  100.00 |   100.00 |  100.00 |  100.00
+ components/ConditionOptionRow        |  100.00 |   100.00 |  100.00 |  100.00
+ components/CryptoCard                |   93.75 |    90.47 |  100.00 |  100.00
+ components/PrimaryButton             |  100.00 |    76.92 |  100.00 |  100.00
+ context/AlertProvider                |   97.22 |    80.00 |   93.33 |   96.77
+ screens/CreateAlertScreen            |   96.96 |    85.00 |  100.00 |  100.00
+ screens/CryptoListScreen             |  100.00 |   100.00 |  100.00 |  100.00
+ screens/PriceAlertsScreen            |  100.00 |   100.00 |  100.00 |  100.00
+ utils/index.ts                       |  100.00 |   100.00 |  100.00 |  100.00
 ```
 
+O arquivo completo com o resumo da execução está em [`docs/coverage-summary.txt`](docs/coverage-summary.txt). O relatório HTML detalhado é gerado em `coverage/lcov-report/index.html` após rodar o comando.
+
 > **Destaques de Cobertura nos Itens Testados:**
-> - `utils/index.ts`: **100%** de linhas, funções e branches.
-> - `useCryptoListScreen.ts`: **100%** de cobertura em statements, branches, funções e linhas.
-> - Componentes testados (`PrimaryButton`, `CryptoCard`, `ConditionOptionRow`, `ScreenHeader`, `SelectField`): **100% de linhas cobertas**.
-> - Tela e Provider de Alertas (`CreateAlertScreen`, `AlertProvider`): **~90-93% de linhas cobertas**.
+> - `utils/index.ts`: **100%** de statements, branches, funções e linhas, incluindo entradas inválidas.
+> - `useCryptoListScreen.ts` e `useCreateAlertScreen.ts`: **100% de linhas**.
+> - `CryptoListScreen`, `PriceAlertsScreen` e `AlertCard`: **100% de linhas**.
+> - `CreateAlertScreen` e `AlertProvider`: **acima de 96% de linhas**.
+> - O fluxo de integração valida o alerta na tela final, não apenas o redirecionamento e o armazenamento.
 
 ---
 
@@ -220,3 +224,8 @@ Snapshots:   0 total
   5. `test(hooks): add unit and async tests for useCryptoListScreen hook`
   6. `test(integration): add full user flow test for CreateAlertScreen`
   7. `docs: update README with test suite documentation and coverage report`
+  8. `fix(utils): handle invalid inputs in price and change formatters`
+  9. `test(hooks): assert initial loading and validate alert form rules`
+  10. `test(components): use real alert provider and cover screen states`
+  11. `test(integration): validate saved alert in PriceAlertsScreen`
+  12. `docs: update coverage report and test documentation`

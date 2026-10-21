@@ -1,0 +1,45 @@
+Relatório de Cobertura - Crypto Alert
+=====================================
+
+Comando executado:
+  npm run test:coverage -- --runInBand
+
+Resultado:
+  Test Suites: 8 passed, 8 total
+  Tests:       41 passed, 41 total
+  Snapshots:   0 total
+  Tempo:       ~7,7 s
+
+Resumo geral:
+  Statements : 75,52%
+  Branches   : 66,25%
+  Functions  : 80,00%
+  Lines      : 77,20%
+
+Cobertura por área:
+-------------------------------------------------------------------------------
+Arquivo/Área                          | % Stmts | % Branch | % Funcs | % Lines
+-------------------------------------------------------------------------------
+All files                             |   75.52 |    66.25 |   80.00 |   77.20
+ components/AlertCard                 |  100.00 |   100.00 |  100.00 |  100.00
+ components/ConditionOptionRow        |  100.00 |   100.00 |  100.00 |  100.00
+ components/CryptoCard                |   93.75 |    90.47 |  100.00 |  100.00
+ components/EmptyState                |  100.00 |    75.00 |  100.00 |  100.00
+ components/ErrorState                |  100.00 |    25.00 |  100.00 |  100.00
+ components/LoadingState              |  100.00 |    50.00 |  100.00 |  100.00
+ components/PrimaryButton             |  100.00 |    76.92 |  100.00 |  100.00
+ components/ScreenHeader              |  100.00 |    50.00 |  100.00 |  100.00
+ components/SelectField               |   94.44 |    69.23 |   90.00 |  100.00
+ context/AlertProvider                |   97.22 |    80.00 |   93.33 |   96.77
+ screens/CreateAlertScreen            |   96.96 |    85.00 |  100.00 |  100.00
+ screens/CryptoListScreen             |  100.00 |   100.00 |  100.00 |  100.00
+ screens/PriceAlertsScreen            |  100.00 |   100.00 |  100.00 |  100.00
+ theme/colors.ts                      |  100.00 |   100.00 |  100.00 |  100.00
+ utils/index.ts                       |  100.00 |   100.00 |  100.00 |  100.00
+-------------------------------------------------------------------------------
+
+Destaques:
+- `utils/index.ts` e `useCryptoListScreen.ts`: 100% em statements, branches, funções e linhas.
+- `CryptoListScreen`, `PriceAlertsScreen` e `AlertCard`: 100% de linhas.
+- `CreateAlertScreen` e `AlertProvider`: acima de 96% de linhas.
+- O relatório HTML completo fica em `coverage/lcov-report/index.html` após rodar o comando.
