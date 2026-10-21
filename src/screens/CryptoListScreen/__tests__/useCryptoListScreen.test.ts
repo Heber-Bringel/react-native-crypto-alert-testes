@@ -42,12 +42,26 @@ describe("Hook Customizado - useCryptoListScreen", () => {
     jest.clearAllMocks();
   });
 
-  it("deve iniciar em estado de carregamento e atualizar para 'idle' com os dados após sucesso da API", async () => {
-    mockedFetchCryptos.mockResolvedValueOnce(mockApiResponse);
+  it("deve iniciar em estado de carregamento com os dados de fallback e atualizar para 'idle' após sucesso da API", async () => {
+    let resolveFetch!: (value: Cryptocurrency[]) => void;
+
+    mockedFetchCryptos.mockReturnValueOnce(
+      new Promise<Cryptocurrency[]>((resolve) => {
+        resolveFetch = resolve;
+      }),
+    );
 
     const { result } = await renderHook(() => useCryptoListScreen());
 
-    // Aguarda o efeito assíncrono resolver com sucesso
+    // Antes da promise resolver, o estado inicial deve permanecer em loading
+    expect(result.current.loadingState).toBe("loading");
+    expect(result.current.cryptocurrencies).toEqual(fallbackCryptos);
+
+    await act(async () => {
+      resolveFetch(mockApiResponse);
+    });
+
+    // Aguarda o efeito assíncrono concluir com sucesso
     await waitFor(() => {
       expect(result.current.loadingState).toBe("idle");
     });
