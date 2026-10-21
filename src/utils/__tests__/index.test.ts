@@ -34,6 +34,18 @@ describe("Utils - Funções de Formatação Numérica", () => {
       const resultRoundedZeroDecimals = formatPrice(99.6, 0);
       expect(resultRoundedZeroDecimals).toBe("100");
     });
+
+    it("deve retornar 0.00 para entradas inválidas (NaN, infinito, null e undefined)", () => {
+      expect(formatPrice(Number.NaN)).toBe("0.00");
+      expect(formatPrice(Number.POSITIVE_INFINITY)).toBe("0.00");
+      expect(formatPrice(Number.NEGATIVE_INFINITY)).toBe("0.00");
+      expect(formatPrice(null as unknown as number)).toBe("0.00");
+      expect(formatPrice(undefined as unknown as number)).toBe("0.00");
+    });
+
+    it("deve manter a quantidade de casas decimais ao tratar entrada inválida", () => {
+      expect(formatPrice(Number.NaN, 6)).toBe("0.000000");
+    });
   });
 
   describe("formatChange", () => {
@@ -60,6 +72,14 @@ describe("Utils - Funções de Formatação Numérica", () => {
     it("deve tratar pequenas variações negativas próximas a zero", () => {
       const result = formatChange(-0.004);
       expect(result).toBe("-0.00%");
+    });
+
+    it("deve retornar +0.00% para entradas inválidas (NaN, infinito, null e undefined)", () => {
+      expect(formatChange(Number.NaN)).toBe("+0.00%");
+      expect(formatChange(Number.POSITIVE_INFINITY)).toBe("+0.00%");
+      expect(formatChange(Number.NEGATIVE_INFINITY)).toBe("+0.00%");
+      expect(formatChange(null as unknown as number)).toBe("+0.00%");
+      expect(formatChange(undefined as unknown as number)).toBe("+0.00%");
     });
   });
 });
