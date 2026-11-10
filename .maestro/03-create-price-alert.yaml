@@ -5,7 +5,7 @@ name: "03 - Criação de Alerta de Preço e Validação de Badge na Listagem"
     clearState: true
 
 # 1. Acessa a aba de Alertas e valida navegação de ida e volta (Go back)
-- tapOn: "Alerts"
+- tapOn: ".*, Alerts"
 - assertVisible: "Price Alerts"
 - assertVisible: "No alerts yet"
 - tapOn: "Create Alert"
@@ -37,10 +37,10 @@ name: "03 - Criação de Alerta de Preço e Validação de Badge na Listagem"
 - assertVisible: "Bitcoin"
 - assertVisible: "Alert when price goes below"
 - assertVisible: "$75,000.00"
-- takeScreenshot: "03-created-alert"
+- takeScreenshot: "docs/screenshots/03-created-alert"
 
 # 6. Volta para a aba List e valida a badge expansível "1 alert" no card do Bitcoin
-- tapOn: "List"
+- tapOn: ".*, List"
 - assertVisible: "Cryptocurrencies"
 - extendedWaitUntil:
     visible: "1 alert"
@@ -48,4 +48,4 @@ name: "03 - Criação de Alerta de Preço e Validação de Badge na Listagem"
 - tapOn: "1 alert"
 - assertVisible: "Below target"
 - assertVisible: "$75,000.00"
-- takeScreenshot: "03-list-alert-badge-expanded"
+- takeScreenshot: "docs/screenshots/03-list-alert-badge-expanded"

@@ -5,7 +5,7 @@ name: "04 - Exclusão de Alerta de Preço e Retorno ao Estado Vazio"
     clearState: true
 
 # 1. Navega para Alerts e cria um alerta para Ethereum
-- tapOn: "Alerts"
+- tapOn: ".*, Alerts"
 - assertVisible: "No alerts yet"
 - tapOn: "New Alert"
 - tapOn: "Select cryptocurrency"
@@ -29,4 +29,4 @@ name: "04 - Exclusão de Alerta de Preço e Retorno ao Estado Vazio"
 - assertNotVisible: "$4,500.00"
 - assertVisible: "No alerts yet"
 - assertVisible: "Create Alert"
-- takeScreenshot: "04-deleted-alert-empty-state"
+- takeScreenshot: "docs/screenshots/04-deleted-alert-empty-state"

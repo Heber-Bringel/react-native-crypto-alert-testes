@@ -12,10 +12,10 @@ name: "01 - Listagem de Criptomoedas e Navegação entre Abas"
 - assertVisible: "BTC"
 - assertVisible: "Ethereum"
 - assertVisible: "ETH"
-- takeScreenshot: "01-crypto-list"
+- takeScreenshot: "docs/screenshots/01-crypto-list"
 
 # 2. Navega para a aba de Conversão e valida elementos reais da tela
-- tapOn: "Convert"
+- tapOn: ".*, Convert"
 - assertVisible: "Convert Crypto"
 - assertVisible: "Amount"
 - assertVisible: "Cryptocurrency"
@@ -26,13 +26,13 @@ name: "01 - Listagem de Criptomoedas e Navegação entre Abas"
 - assertVisible: "Enter an amount"
 
 # 3. Navega para a aba de Alertas e valida estado vazio inicial
-- tapOn: "Alerts"
+- tapOn: ".*, Alerts"
 - assertVisible: "Price Alerts"
 - assertVisible: "New Alert"
 - assertVisible: "No alerts yet"
 - assertVisible: "Create Alert"
 
 # 4. Retorna para a aba de Listagem
-- tapOn: "List"
+- tapOn: ".*, List"
 - assertVisible: "Cryptocurrencies"
 - assertVisible: "Bitcoin"
