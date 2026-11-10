@@ -1,0 +1,39 @@
+appId: com.cryptoalert
+name: "02 - Conversão Reativa de Criptomoedas e Moedas Fiduciárias"
+---
+- launchApp:
+    clearState: true
+
+# 1. Acessa a aba Convert e verifica placeholder inicial do resultado
+- tapOn: "Convert"
+- assertVisible: "Convert Crypto"
+- assertVisible: "Enter an amount"
+
+# 2. Insere valor inválido (zero) e valida mensagem de erro reativa
+- tapOn:
+    id: "conversion-amount-input"
+- inputText: "0"
+- hideKeyboard
+- assertVisible: "Invalid amount"
+
+# 3. Limpa o campo, digita quantidade válida (2) e verifica conversão em USD ($)
+- tapOn:
+    id: "conversion-amount-input"
+- eraseText: 5
+- inputText: "2"
+- hideKeyboard
+- assertVisible: "\\$[0-9,]+\\.[0-9]{2}"
+
+# 4. Altera a criptomoeda no modal SelectField de Bitcoin (BTC) para Ethereum (ETH)
+- tapOn: "Bitcoin (BTC)"
+- assertVisible: "Cryptocurrency"
+- tapOn: "Ethereum"
+- assertVisible: "Ethereum (ETH)"
+
+# 5. Altera a moeda fiduciária no modal SelectField de USD ($) para BRL (R$)
+- tapOn: "USD ($)"
+- assertVisible: "Fiat Currency"
+- tapOn: "BRL"
+- assertVisible: "BRL (R$)"
+- assertVisible: "R\\$[0-9,]+\\.[0-9]{2}"
+- takeScreenshot: "02-convert-crypto-brl"

@@ -1,0 +1,38 @@
+appId: com.cryptoalert
+name: "01 - Listagem de Criptomoedas e Navegação entre Abas"
+---
+- launchApp:
+    clearState: true
+
+# 1. Valida o carregamento da tela inicial (Listagem de Criptomoedas)
+- assertVisible: "Cryptocurrencies"
+- extendedWaitUntil:
+    visible: "Bitcoin"
+    timeout: 15000
+- assertVisible: "BTC"
+- assertVisible: "Ethereum"
+- assertVisible: "ETH"
+- takeScreenshot: "01-crypto-list"
+
+# 2. Navega para a aba de Conversão e valida elementos reais da tela
+- tapOn: "Convert"
+- assertVisible: "Convert Crypto"
+- assertVisible: "Amount"
+- assertVisible: "Cryptocurrency"
+- assertVisible: "Bitcoin (BTC)"
+- assertVisible: "Fiat Currency"
+- assertVisible: "USD ($)"
+- assertVisible: "Converted Amount"
+- assertVisible: "Enter an amount"
+
+# 3. Navega para a aba de Alertas e valida estado vazio inicial
+- tapOn: "Alerts"
+- assertVisible: "Price Alerts"
+- assertVisible: "New Alert"
+- assertVisible: "No alerts yet"
+- assertVisible: "Create Alert"
+
+# 4. Retorna para a aba de Listagem
+- tapOn: "List"
+- assertVisible: "Cryptocurrencies"
+- assertVisible: "Bitcoin"

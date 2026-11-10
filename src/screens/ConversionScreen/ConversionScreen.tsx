@@ -32,6 +32,7 @@ export function ConversionScreen() {
       <View style={conversionScreenStyles.fieldBlock}>
         <Text style={conversionScreenStyles.amountLabel}>Amount</Text>
         <TextInput
+          testID="conversion-amount-input"
           style={conversionScreenStyles.amountInput}
           placeholder="0.00"
           placeholderTextColor={colors.textMuted}
