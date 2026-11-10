@@ -1,0 +1,5 @@
+flows:
+  - 01-list-and-navigation.yaml
+  - 02-convert-crypto.yaml
+  - 03-create-price-alert.yaml
+  - 04-delete-price-alert.yaml
