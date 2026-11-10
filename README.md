@@ -10,7 +10,13 @@
 - [Sobre o Projeto](#-sobre-o-projeto)
 - [Instalação das Dependências](#-instalação-das-dependências)
 - [Configuração de Variáveis de Ambiente](#-configuração-de-variáveis-de-ambiente)
-- [Comandos para Executar os Testes](#-comandos-para-executar-os-testes)
+- [Testes End-to-End (E2E) com Maestro e IA Generativa](#-testes-end-to-end-e2e-com-maestro-e-ia-generativa)
+  - [Entregáveis da Atividade E2E](#entregáveis-da-atividade-e2e)
+  - [Como Abrir o Emulador ou Simulador e Instalar a Build Nativa](#1-como-abrir-o-emulador-ou-simulador-e-instalar-a-build-nativa)
+  - [Como Instalar e Configurar o Maestro](#2-como-instalar-e-configurar-o-maestro)
+  - [Como Executar os Testes E2E](#3-como-executar-os-testes-e2e)
+  - [Fluxos E2E Implementados (`.maestro/`)](#4-fluxos-e2e-implementados-maestro)
+- [Comandos para Executar os Testes Unitários e de Integração](#-comandos-para-executar-os-testes)
 - [Comando para Gerar a Cobertura](#-comando-para-gerar-a-cobertura)
 - [Explicação dos Testes Criados](#-explicação-dos-testes-criados)
   - [1. Funções Puras e Formatadores (Item 1)](#1-funções-puras-e-formatadores-item-1)
@@ -61,7 +67,105 @@ No arquivo `.env`, preencha sua chave de API (obtida em [CoinGecko](https://www.
 EXPO_PUBLIC_COINGECKO_API_KEY=sua_chave_aqui
 ```
 
-> **Nota:** Durante a execução dos testes automatizados, nenhuma chamada real à API é realizada, respeitando as regras de testes isolados.
+> **Nota:** Durante a execução dos testes automatizados unitários/integração, nenhuma chamada real à API é realizada, respeitando as regras de testes isolados.
+
+---
+
+## 📱 Testes End-to-End (E2E) com Maestro e IA Generativa
+
+Além dos testes unitários e de integração com Jest/RNTL, o projeto conta com uma suíte completa de **testes End-to-End (E2E)** utilizando o **Maestro**, elaborada com apoio de Inteligência Artificial Generativa e validada criticamente com base no artigo [*GenIA-E2ETest: A Generative AI-Based Approach for End-to-End Test Automation*](https://arxiv.org/abs/2510.01024).
+
+### Entregáveis da Atividade E2E
+- 📄 **[`reflexao.md`](reflexao.md)**: Respostas às questões conceituais e técnicas sobre o artigo *GenIA-E2ETest*, limitações de LLMs em testes E2E e validação prática com Maestro.
+- 🤖 **[`ia/planejamento.md`](ia/planejamento.md)**: Registro do prompt utilizado, resposta original da IA, cenários selecionados e análise crítica detalhada (o que foi aproveitado, corrigido e descartado após inspeção da interface real).
+- 📂 **[`.maestro/`](.maestro/)**: Pasta na raiz contendo a configuração e os 4 fluxos E2E executáveis no Maestro.
+
+---
+
+### 1. Como Abrir o Emulador ou Simulador e Instalar a Build Nativa
+
+> **Importante:** O aplicativo (`appId: com.cryptoalert`) deve estar compilado e instalado no emulador Android ou simulador iOS antes da execução dos testes E2E com o Maestro.
+
+#### Opção A: Emulador Android (Windows / Linux / macOS)
+1. Abra o **Android Studio** -> **Virtual Device Manager** e inicie um emulador (ou execute via terminal):
+   ```bash
+   emulator -avd <NOME_DO_SEU_AVD>
+   ```
+2. Verifique se o dispositivo está conectado via ADB:
+   ```bash
+   adb devices
+   ```
+3. Gere a pasta nativa e instale o aplicativo no emulador Android:
+   ```bash
+   npx expo run:android
+   ```
+
+#### Opção B: Simulador iOS (macOS)
+1. Abra o simulador iOS pelo Xcode:
+   ```bash
+   open -a Simulator
+   ```
+2. Compile e instale a versão nativa no simulador:
+   ```bash
+   npx expo run:ios
+   ```
+
+---
+
+### 2. Como Instalar e Configurar o Maestro
+
+1. Certifique-se de possuir o **Java (JDK 17 ou superior)** instalado:
+   ```bash
+   java -version
+   ```
+2. Instale o **Maestro CLI**:
+   - **macOS / Linux / WSL:**
+     ```bash
+     curl -Ls "https://get.maestro.mobile.dev" | bash
+     ```
+   - **Windows (via PowerShell / instalador oficial ou WSL2):**
+     Baixe a release do Maestro ou execute via WSL conectado ao ADB do host, garantindo que o binário `maestro` esteja no `PATH`.
+3. Confirme a instalação:
+   ```bash
+   maestro --version
+   ```
+
+---
+
+### 3. Como Executar os Testes E2E
+
+Com o emulador/simulador aberto e o aplicativo **Crypto Alert** instalado (`com.cryptoalert`):
+
+- **Executar todos os 4 fluxos E2E em sequência:**
+  ```bash
+  maestro test .maestro/
+  ```
+
+- **Executar um fluxo específico:**
+  ```bash
+  maestro test .maestro/01-list-and-navigation.yaml
+  maestro test .maestro/02-convert-crypto.yaml
+  maestro test .maestro/03-create-price-alert.yaml
+  maestro test .maestro/04-delete-price-alert.yaml
+  ```
+
+- **Gravar vídeo curto da execução de um fluxo (evidência em vídeo):**
+  ```bash
+  maestro record .maestro/02-convert-crypto.yaml docs/e2e-convert-crypto.mp4
+  maestro record .maestro/03-create-price-alert.yaml docs/e2e-create-alert.mp4
+  ```
+  *(Nota: Os próprios arquivos `.yaml` já incluem o comando `takeScreenshot` nos pontos-chave para gerar automaticamente as capturas de tela `01-crypto-list.png`, `02-convert-crypto-brl.png`, `03-created-alert.png`, `03-list-alert-badge-expanded.png` e `04-deleted-alert-empty-state.png`).*
+
+---
+
+### 4. Fluxos E2E Implementados (`.maestro/`)
+
+| Arquivo | Nome do Fluxo | O que é validado na interface real |
+| :--- | :--- | :--- |
+| [`.maestro/01-list-and-navigation.yaml`](.maestro/01-list-and-navigation.yaml) | **01 - Listagem e Navegação entre Abas** | Inicialização limpa (`clearState: true`), carregamento da tela `"Cryptocurrencies"` com `"Bitcoin"` (`"BTC"`) e `"Ethereum"` (`"ETH"`), e navegação pelas abas `"Convert"`, `"Alerts"` (`"No alerts yet"`) e `"List"`. |
+| [`.maestro/02-convert-crypto.yaml`](.maestro/02-convert-crypto.yaml) | **02 - Conversão Reativa de Criptomoedas** | Estado inicial (`"Enter an amount"`), validação de valor inválido (`"0"` -> `"Invalid amount"`), conversão reativa em dólar (`USD ($)`), abertura dos modais do componente `SelectField` para selecionar `"Ethereum"` e `"BRL"` e validação do valor formatado em Reais (`R$`). |
+| [`.maestro/03-create-price-alert.yaml`](.maestro/03-create-price-alert.yaml) | **03 - Criação de Alerta e Badge na Lista** | Navegação até `"Create Alert"` (testando o retorno `"Go back"` e abertura via `"New Alert"`), seleção de `"Bitcoin"` no modal `"Select cryptocurrency"`, digitação do preço-alvo `"75000"`, escolha da condição `"Below target price"`, salvamento em `"Save Alert"`, validação na tela `"Price Alerts"` (`"$75,000.00"`) e expansão da badge `"1 alert"` no card do Bitcoin na aba `"List"`. |
+| [`.maestro/04-delete-price-alert.yaml`](.maestro/04-delete-price-alert.yaml) | **04 - Exclusão de Alerta de Preço** | Criação de alerta para `"Ethereum"` (`"Above target price"`, `"$4,500.00"`), verificação na listagem `"Price Alerts"`, exclusão pelo botão de lixeira (`accessibilityLabel="Delete alert"`) e confirmação do retorno ao estado vazio `"No alerts yet"`. |
 
 ---
 
@@ -276,3 +380,9 @@ O arquivo completo com o resumo da execução está em [`docs/coverage-summary.t
   10. `test(components): use real alert provider and cover screen states`
   11. `test(integration): validate saved alert in PriceAlertsScreen`
   12. `docs: update coverage report and test documentation`
+  13. `docs: adiciona reflexao sobre o artigo GenIA-E2ETest (Parte 1)`
+  14. `chore: configura identificadores nativos e estrutura inicial do Maestro (Parte 2)`
+  15. `docs(ia): adiciona planejamento de testes E2E e analise critica (Parte 3)`
+  16. `test(e2e): implementa fluxos Maestro de listagem, navegacao e conversao de criptomoedas`
+  17. `test(e2e): implementa fluxos Maestro de criacao e exclusao de alertas de preco`
+  18. `docs: atualiza README com instrucoes de emulador, build nativa e execucao do Maestro`
