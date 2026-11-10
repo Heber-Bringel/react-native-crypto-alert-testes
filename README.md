@@ -169,6 +169,36 @@ Com o emulador/simulador aberto e o aplicativo **Crypto Alert** instalado (`com.
 
 ---
 
+### 5. Evidências de Execução dos Fluxos E2E no Emulador Android (`docs/screenshots/`)
+
+Resultado da execução completa da suíte no emulador Android (`emulator-5554`):
+
+```text
+> maestro test .maestro/
+
+ ║  > Flow 01 - Crypto List and Bottom Tab Navigation                   ║
+ ║  > Flow 02 - Convert Cryptocurrency to Fiat Currency                 ║
+ ║  > Flow 03 - Create Price Alert and Verify Badge on List             ║
+ ║  > Flow 04 - Delete Existing Price Alert                             ║
+
+[Passed] 01-list-and-navigation (19s)
+[Passed] 02-convert-crypto (26s)
+[Passed] 03-create-price-alert (31s)
+[Passed] 04-delete-price-alert (28s)
+
+4/4 Flows Passed in 1m 45s
+```
+
+| Fluxo 01: Listagem de Criptomoedas | Fluxo 02: Conversão (ETH -> BRL) | Fluxo 03: Alerta Criado (`$75,000.00`) |
+| :---: | :---: | :---: |
+| ![01 - Crypto List](docs/screenshots/01-crypto-list.png) | ![02 - Convert Crypto BRL](docs/screenshots/02-convert-crypto-brl.png) | ![03 - Created Alert](docs/screenshots/03-created-alert.png) |
+
+| Fluxo 03: Badge `"1 alert"` Expandida na Lista | Fluxo 04: Exclusão de Alerta (`"No alerts yet"`) |
+| :---: | :---: |
+| ![03 - List Alert Badge Expanded](docs/screenshots/03-list-alert-badge-expanded.png) | ![04 - Deleted Alert Empty State](docs/screenshots/04-deleted-alert-empty-state.png) |
+
+---
+
 ## 🧪 Comandos para Executar os Testes
 
 Execute todos os testes da suíte com:
