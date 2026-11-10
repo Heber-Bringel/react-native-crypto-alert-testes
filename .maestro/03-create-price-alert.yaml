@@ -1,0 +1,51 @@
+appId: com.cryptoalert
+name: "03 - Criação de Alerta de Preço e Validação de Badge na Listagem"
+---
+- launchApp:
+    clearState: true
+
+# 1. Acessa a aba de Alertas e valida navegação de ida e volta (Go back)
+- tapOn: "Alerts"
+- assertVisible: "Price Alerts"
+- assertVisible: "No alerts yet"
+- tapOn: "Create Alert"
+- assertVisible: "Select cryptocurrency"
+- tapOn: "Go back"
+- assertVisible: "Price Alerts"
+
+# 2. Abre o formulário pelo botão New Alert e preenche os dados do alerta
+- tapOn: "New Alert"
+- assertVisible: "Create Alert"
+- assertVisible: "Target Price (USD)"
+- assertVisible: "Alert Condition"
+
+# 3. Seleciona Bitcoin no modal SelectField
+- tapOn: "Select cryptocurrency"
+- tapOn: "Bitcoin"
+- assertVisible: "Bitcoin (BTC)"
+
+# 4. Digita o preço-alvo e seleciona a condição "Below target price"
+- tapOn:
+    id: "target-price-input"
+- inputText: "75000"
+- hideKeyboard
+- tapOn: "Below target price"
+- tapOn: "Save Alert"
+
+# 5. Verifica que o alerta salvo é exibido na tela Price Alerts
+- assertVisible: "Price Alerts"
+- assertVisible: "Bitcoin"
+- assertVisible: "Alert when price goes below"
+- assertVisible: "$75,000.00"
+- takeScreenshot: "03-created-alert"
+
+# 6. Volta para a aba List e valida a badge expansível "1 alert" no card do Bitcoin
+- tapOn: "List"
+- assertVisible: "Cryptocurrencies"
+- extendedWaitUntil:
+    visible: "1 alert"
+    timeout: 15000
+- tapOn: "1 alert"
+- assertVisible: "Below target"
+- assertVisible: "$75,000.00"
+- takeScreenshot: "03-list-alert-badge-expanded"

@@ -1,0 +1,32 @@
+appId: com.cryptoalert
+name: "04 - Exclusão de Alerta de Preço e Retorno ao Estado Vazio"
+---
+- launchApp:
+    clearState: true
+
+# 1. Navega para Alerts e cria um alerta para Ethereum
+- tapOn: "Alerts"
+- assertVisible: "No alerts yet"
+- tapOn: "New Alert"
+- tapOn: "Select cryptocurrency"
+- tapOn: "Ethereum"
+- assertVisible: "Ethereum (ETH)"
+- tapOn:
+    id: "target-price-input"
+- inputText: "4500"
+- hideKeyboard
+- tapOn: "Above target price"
+- tapOn: "Save Alert"
+
+# 2. Confirma que o alerta de Ethereum foi listado em Price Alerts
+- assertVisible: "Price Alerts"
+- assertVisible: "Ethereum"
+- assertVisible: "Alert when price goes above"
+- assertVisible: "$4,500.00"
+
+# 3. Exclui o alerta pelo botão de lixeira (accessibilityLabel="Delete alert")
+- tapOn: "Delete alert"
+- assertNotVisible: "$4,500.00"
+- assertVisible: "No alerts yet"
+- assertVisible: "Create Alert"
+- takeScreenshot: "04-deleted-alert-empty-state"
